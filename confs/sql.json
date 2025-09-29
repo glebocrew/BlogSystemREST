@@ -1,0 +1,12 @@
+{
+    "init_users": "CREATE TABLE users (id TEXT, email TEXT, login TEXT, password TEXT, createdAt DATETIME, updatedAt DATETIME)",
+    "init_posts": "",
+
+
+    "get_users": "SELECT * FROM users;",
+
+        "create_user": "INSERT INTO users (id, email, login, password, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?);",
+        "put_user": "UPDATE users SET email = ?, login = ?, password = ?, updatedAt = ? WHERE id = ?;",
+        "get_user": "SELECT * FROM users WHERE id = ?;",
+        "delete_user": "DELETE FROM users WHERE id = ?;"
+}

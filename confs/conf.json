@@ -1,0 +1,23 @@
+{
+    "fastapi":{
+        "templates": "resources/templates",
+        "static": "resources/static"
+    },
+
+    "logger":{
+        "app": "logs/app_log.txt",
+        "db": "logs/db_log.txt",
+        "init": "logs/init_log.txt"
+    },
+    
+    "db":{
+        "queries": "confs/sql.json",
+        "conn": {
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "glebocrew",
+            "database": "test"
+        }
+    }
+}
