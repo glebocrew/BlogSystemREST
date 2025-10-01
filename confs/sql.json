@@ -1,6 +1,6 @@
 {
-    "init_users": "CREATE TABLE users (id TEXT, email TEXT, login TEXT, password TEXT, createdAt DATETIME, updatedAt DATETIME)",
-    "init_posts": "",
+    "init_users": "CREATE TABLE users (id TEXT, email TEXT, login TEXT, password TEXT, createdAt DATETIME, updatedAt DATETIME);",
+    "init_posts": "CREATE TABLE posts (id TEXT, authorId TEXT, title TEXT, content TEXT, createdAt DATETIME, updatedAt DATETIME);",
 
 
     "get_users": "SELECT * FROM users;",
@@ -8,5 +8,15 @@
         "create_user": "INSERT INTO users (id, email, login, password, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?);",
         "put_user": "UPDATE users SET email = ?, login = ?, password = ?, updatedAt = ? WHERE id = ?;",
         "get_user": "SELECT * FROM users WHERE id = ?;",
-        "delete_user": "DELETE FROM users WHERE id = ?;"
+        "delete_user": "DELETE FROM users WHERE id = ?;",
+        "check_user": "SELECT * FROM users WHERE email = ? OR login = ?;",
+    
+    "get_posts": "SELECT * FROM posts;",
+
+        "create_post": "INSERT INTO posts (id, authorId, title, content, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?);",
+        "update_post": "UPDATE posts SET title = ?, content = ?, updatedAt = ? WHERE id = ?;",
+        "get_post": "SELECT * FROM posts WHERE id = ?;",
+        "delete_post": "DELETE FROM posts WHERE id = ?;",
+
+    "delete_all_user_posts": "DELETE FROM posts WHERE authorId = ?;"
 }

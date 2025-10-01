@@ -1,4 +1,4 @@
-from models import *
+from db import *
 from logger import Logger
 
 
@@ -38,3 +38,29 @@ except Exception as e:
         status="f", 
         message=f"Initialization failed! Full exception {e}"
     )
+
+try:
+    init_logger.log(
+        status="l", 
+        message="Initializing posts"
+    )
+
+    mariamanager._execute(
+        query=sql["init_posts"],
+        data=[]
+    )
+
+    init_logger.log(
+        status="l",
+        message="Posts are successfully initialized"
+    )
+
+except Exception as e:
+    init_logger.log(
+        status="f", 
+        message=f"Initialization failed! Full exception {e}"
+    )
+
+    
+    
+
