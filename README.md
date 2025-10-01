@@ -17,7 +17,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 Then, insert your database into confs/conf.json
@@ -29,6 +29,10 @@ Then, insert your database into confs/conf.json
     "password": "password",
     "database": "test"
 }
+```
+
+```bash
+mkdir logs
 ```
 
 After that, run `init.py`
