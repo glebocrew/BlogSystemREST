@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <link href="{{ url_for('static', path='styles/global.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='styles/posts.css') }}" rel="stylesheet">
+
+    <title>Posts</title>
+</head>
+
+<style>
+    @font-face {
+        font-family: "main";
+        src: url("{{ url_for('static', path='fonts/main.ttf') }}");
+    }
+
+    a {
+        position: relative;
+
+        text-decoration: underline;
+
+        color: var(--text-color-1--) !important;
+
+        font-size: var(--font-size-header--);
+
+        padding: 5%;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    a:visited {
+        color: var(--text-color-1--);
+    }
+</style>
+
+<body>
+    <div class="back">
+        <h1 class="h1"><a href="/">Back</a></h1>
+    </div>
+    {% if posts %}
+    <div class="posts">
+        {% for post in posts %}
+        <div class="post">
+            <button class="invisible-btn" onclick="window.location.assign( `/posts/{{ post['id'] }}` );"></button>
+            <div class="login">
+                <h1 class="login-h1">{{ post["title"] }}</h1>
+            </div>
+            <div class="info">
+                <p class="info-p">{{ post["content"] }}</p>
+                <p class="info-p">created at: {{ ' '.join(post["createdAt"].split('T')) }}</p>
+                <p class="info-p">updated at: {{ ' '.join(post["updatedAt"].split('T')) }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="posts-f">
+        <div class="post-f">
+            <form class="auth-form" id="postForm" onsubmit="return createPost(event)">
+                <div class="form-group">
+                    <label class="form-label">AuthorId</label>
+                    <input type="text" class="form-input" id="authorId" placeholder="Введите id автора" required
+                        minlength="36">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="title" placeholder="Введите заголовок" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Content</label>
+                    <input type="text" class="form-input" id="content" placeholder="Введите контент" required>
+                </div>
+
+                <button type="submit" class="submit-btn">Создать пост</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+    async function createPost(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('postForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return false;
+        }
+
+        try {
+            const response = await fetch('/api/posts/?authorId=' +
+                document.getElementById("authorId").value +
+                "&title=" + document.getElementById("title").value +
+                "&content=" + document.getElementById("content").value, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                window.location.assign('/posts');
+            } else {
+                console.error('Ошибка при создании поста:', response.status);
+            }
+
+        } catch (error) {
+            console.error('Ошибка при создании:', error);
+        }
+
+        return false;
+    }
+
+</script>
+
+</html>

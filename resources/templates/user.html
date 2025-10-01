@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <link href="{{ url_for('static', path='styles/global.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='styles/user.css') }}" rel="stylesheet">
+
+    <title>{{ user['login'] }}</title>
+</head>
+
+<style>
+    @font-face {
+        font-family: "main";
+        src: url("{{ url_for('static', path='fonts/main.ttf') }}");
+    }
+
+    a {
+        position: relative;
+
+        text-decoration: underline;
+
+        color: var(--text-color-1--) !important;
+
+        font-size: var(--font-size-header--);
+
+        padding: 5%;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    a:visited {
+        color: var(--text-color-1--);
+    }
+</style>
+
+<body>
+    <div class="back">
+        <h1 class="h1"><a href="/users">Back</a></h1>
+    </div>
+    {% if user %}
+    <div class="users">
+        <div class="user">
+            <div class="login">
+                <h1 class="login-h1">{{ user["login"] }}</h1>
+            </div>
+            <div class="info">
+                <p class="info-p">id: {{ user["id"] }}</p>
+                <p class="info-p">email: {{ user["email"] }}</p>
+                <p class="info-p">created at: {{ ' '.join(user["createdAt"].split('T')) }}</p>
+                <p class="info-p">updated at: {{ ' '.join(user["updatedAt"].split('T')) }}</p>
+            </div>
+        </div>
+
+        <div class="del-btn">
+            <button type="submit" class="invisible-btn" onclick="deleteUser(`{{ user['id'] }}`)"></button>
+            <h1 class="login-h1">delete user</h1>
+        </div>
+
+    </div>
+
+    {% endif %}
+</body>
+
+<script>
+    async function deleteUser(userId) {
+        try {
+            const response = await fetch(`/api/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            window.location.assign(`/users`);
+
+        } catch (error) {
+            console.error('Ошибка при удалении:', error);
+        }
+    }
+
+</script>
+
+</html>

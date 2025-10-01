@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <link href="{{ url_for('static', path='styles/global.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='styles/users.css') }}" rel="stylesheet">
+
+    <title>Users</title>
+</head>
+
+<style>
+    @font-face {
+        font-family: "main";
+        src: url("{{ url_for('static', path='fonts/main.ttf')}}");
+    }
+
+    a {
+        position: relative;
+
+        text-decoration: underline;
+
+        color: var(--text-color-1--) !important;
+
+        font-size: var(--font-size-header--);
+
+        padding: 5%;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    a:visited {
+        color: var(--text-color-1--);
+    }
+</style>
+
+<body>
+    <div class="back">
+        <h1 class="h1"><a href="/">Back</a></h1>
+    </div>
+    {% if users %}
+    <div class="users">
+        {% for user in users %}
+        <div class="user">
+            <button class="invisible-btn" onclick="window.location.assign( `/users/{{ user['id'] }}` );"></button>
+            <div class="login">
+                <h1 class="login-h1">{{ user["login"] }}</h1>
+            </div>
+            <div class="info">
+                <p class="info-p">email: {{ user["email"] }}</p>
+                <p class="info-p">created at: {{ ' '.join(user["createdAt"].split('T')) }}</p>
+                <p class="info-p">updated at: {{ ' '.join(user["updatedAt"].split('T')) }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="users-f">
+        <div class="user-f">
+            <form class="auth-form" id="userForm" onsubmit="return createUser(event)">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="email" placeholder="Введите email" required
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Login</label>
+                    <input type="text" class="form-input" id="login" placeholder="Введите логин" required minlength="3"
+                        maxlength="20" pattern="[a-zA-Z0-9_]+">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="password" placeholder="Введите пароль" required
+                        minlength="6">
+                </div>
+
+                <button type="submit" class="submit-btn">Создать пользователя</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</body>
+
+<script>
+    async function createUser(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('userForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return false;
+        }
+
+        try {
+            const response = await fetch('/api/users/?email=' +
+                document.getElementById("email").value +
+                "&login=" + document.getElementById("login").value +
+                "&password=" + document.getElementById("password").value, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                window.location.assign('/users');
+            } else {
+                console.error('Ошибка при создании пользователя:', response.status);
+            }
+
+        } catch (error) {
+            console.error('Ошибка при создании:', error);
+        }
+
+        return false;
+    }
+
+</script>
+
+</html>

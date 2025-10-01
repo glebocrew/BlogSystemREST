@@ -7,8 +7,9 @@ from logger import Logger
 from db import *
 
 from json import load, loads
-from requests import get
 from typing import Optional, List, Tuple
+
+import requests
 
 # imports
 
@@ -28,17 +29,9 @@ logger = Logger(filepath=conf["logger"]["app"])
 templates = Jinja2Templates(directory=conf["fastapi"]["templates"])
 static = StaticFiles(directory=conf["fastapi"]["static"])
 
-app.mount("/static", static, "static")
+app.mount("/static", static, name="static")
 
-@app.get("/")
-async def index(request: Request):
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "message": "Hello, FastAPI!"
-        }
-    )
+# configures
 
 @app.get("/api/users")
 async def all_users(request: Request) -> Tuple[List[User], int]:
@@ -161,6 +154,19 @@ async def get_posts(request: Request):
         raise HTTPException(status_code=500, detail="Internal server error")
     
 
+@app.get("/api/posts/{id}")
+async def get_post(request: Request, id: str):
+    try:
+        data = mariamanager.get_post(id)
+        if data and data[0] == "404":
+            raise HTTPException(status_code=404, detail="Post not found")
+        return data
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.log(status="e", message=f"Error getting post {id}: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 @app.get("/api/users")
 async def all_users(request: Request) -> Tuple[List[User], int]:
     try:
@@ -268,3 +274,82 @@ async def patch_post(
         logger.log(status="e", message=f"Error updating post {id}: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# api
+
+@app.get("/")
+async def index(request: Request):
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "message": "Hello, FastAPI!"
+        }
+    )
+
+@app.get("/users")
+def users(request: Request):
+    try:
+        all_users = requests.get("http://127.0.0.1:8000/api/users", timeout=5)
+    except TimeoutError:
+        return 404
+
+
+    return templates.TemplateResponse(
+        "users.html",{
+            "request": request,
+            "users": loads(all_users.text)[0]
+        }
+    )
+
+@app.get("/users/{id}")
+def user(request: Request, id):
+    try:
+        this_user = requests.get(f"http://127.0.0.1:8000/api/users/{id}", timeout=5)
+    except TimeoutError:
+        return 404
+    
+    return templates.TemplateResponse(
+        "user.html",{
+            "request": request,
+            "user": loads(this_user.text)[0]
+        }
+    )
+
+@app.get("/posts")
+def posts(request: Request):
+    try:
+        all_posts = requests.get("http://127.0.0.1:8000/api/posts", timeout=5)
+    except TimeoutError:
+        return 404
+
+
+    return templates.TemplateResponse(
+        "posts.html",{
+            "request": request,
+            "posts": loads(all_posts.text)
+        }
+    )
+
+@app.get("/posts/{id}")
+def post(request: Request, id):
+    try:
+        this_post = requests.get(f"http://127.0.0.1:8000/api/posts/{id}", timeout=5)
+    except TimeoutError:
+        return 404
+    
+    return templates.TemplateResponse(
+        "post.html",{
+            "request": request,
+            "post": loads(this_post.text)[0]
+        }
+    )
+
+@app.patch("/api/posts/{id}")
+async def patch_post(request: Request, id: str, title: str, content: str):
+    try:
+        status = mariamanager.update_post(id=id, title=title, content=content)
+        if status and status[0] == "400":
+            raise HTTPException(status_code=400, detail="Bad Request")
+        return "OK", 200
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <link href="{{ url_for('static', path='styles/global.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='styles/post.css') }}" rel="stylesheet">
+
+    <title>{{ post['login'] }}</title>
+</head>
+
+<style>
+    @font-face {
+        font-family: "main";
+        src: url("{{ url_for('static', path='fonts/main.ttf') }}");
+    }
+
+    a {
+        position: relative;
+
+        text-decoration: underline;
+
+        color: var(--text-color-1--) !important;
+
+        font-size: var(--font-size-header--);
+
+        padding: 5%;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    a:visited {
+        color: var(--text-color-1--);
+    }
+</style>
+
+<body>
+    <div class="back">
+        <h1 class="h1"><a href="/posts">Back</a></h1>
+    </div>
+    {% if post %}
+    <div class="posts">
+        <div class="post">
+            <div class="login">
+                <h1 class="login-h1">{{ post["title"] }}</h1>
+            </div>
+            <div class="info">
+                <p class="info-p">author: {{ post["authorId"] }}</p>
+                <p class="info-p">{{ post["content"] }}</p>
+                <p class="info-p">created at: {{ ' '.join(post["createdAt"].split('T')) }}</p>
+                <p class="info-p">updated at: {{ ' '.join(post["updatedAt"].split('T')) }}</p>
+            </div>
+        </div>
+
+        <div class="posts-f">
+            <div class="post-f">
+                <form class="auth-form" onsubmit="return updatePost(event)">
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-input" id="edit-title" value="{{ post['title'] }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Content</label>
+                        <input type="text" class="form-input" id="edit-content" value="{{ post['content'] }}" required>
+                    </div>
+                    <div class="submit-btn">
+                        <button type="submit" class="invisible-btn"></button>
+                        <h1 class="login-h1">save post</h1>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
+        <div class="del-btn">
+            <button type="submit" class="invisible-btn" onclick="deletepost(`{{ post['id'] }}`)"></button>
+            <h1 class="login-h1">delete post</h1>
+        </div>
+
+    </div>
+
+    {% endif %}
+</body>
+
+<script>
+    async function deletepost(postId) {
+        try {
+            const response = await fetch(`/api/posts/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            window.location.assign(`/posts`);
+
+        } catch (error) {
+            console.error('Ошибка при удалении:', error);
+        }
+    }
+
+    async function updatePost(event) {
+        event.preventDefault();
+        const response = await fetch(`/api/posts/{{ post.id }}?title=${document.getElementById("edit-title").value}&content=${document.getElementById("edit-content").value}`, {
+            method: 'PATCH'
+        });
+        if (response.ok) window.location.reload();
+        return false;
+    }
+</script>
+
+</html>

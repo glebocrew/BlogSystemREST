@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
 
-        <title>Index Page</title>
-    </head>
+<head>
+    <meta charset="utf-8">
 
-    <body>
-        {% if message %}
-        <h1>{{ message }}</h1>
-        {% else %}
-        <h1>No message found.</h1>
-        {% endif %}
-    </body>
+    <link href="{{ url_for('static', path='styles/main.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='styles/global.css') }}" rel="stylesheet">
+
+    <title>Home Page</title>
+</head>
+
+<style>
+    @font-face {
+        font-family: "main";
+        src: url("{{ url_for('static', path='fonts/main.ttf') }}");
+    }
+</style>
+
+<body>
+    <h1 class="h1">REST API Blog System</h1>
+    <nav class="menu">
+        <a href="/users">Users</a>
+        <a href="/posts">Posts</a>
+    </nav>
+</body>
+
 </html>

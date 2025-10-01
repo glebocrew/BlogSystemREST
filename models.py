@@ -10,7 +10,6 @@ class InvalidMariaArguments(Exception):
         ) -> None:
 
         super().__init__(f"Invalid Maria Arguments! The connection establishing was failed! Full exception {message}")
-        exit(-1)
 
 class User(BaseModel):
     """

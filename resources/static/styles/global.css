@@ -1,0 +1,23 @@
+* {
+    --background-color--: rgb(41, 41, 41);
+    --text-color-1--: rgb(255, 255, 255);
+
+    --font-size-header--: 2.5vw;
+    --font-size-p--: 1vw;
+
+    font-family: "main";
+}
+
+html,
+body {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    background-color: var(--background-color--);
+    color: var(--text-color-1--);
+}

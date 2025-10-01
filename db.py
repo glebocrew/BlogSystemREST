@@ -81,7 +81,7 @@ class MariaConnection:
                 message=f"Connection failed! Full error {e}"
             )
 
-            raise InvalidMariaArguments
+            raise InvalidMariaArguments("Maria arguments are incorrect!")
         
         self.mariaconn.close()
 
@@ -118,7 +118,7 @@ class MariaConnection:
                 message=f"Something went wrong with mariadb. Probably it's a problem with it's args. Full exception {e}"
             )
 
-            raise InvalidMariaArguments
+            raise InvalidMariaArguments("Maria arguments are incorrect!")
 
     
     def _execute(
@@ -661,7 +661,7 @@ class MariaConnection:
         )
 
         self._execute(
-            query=queries["get_post_by_authorId"],
+            query=queries["delete_all_user_posts"],
             data=(authorId,)
         )
 

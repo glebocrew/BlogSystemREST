@@ -1,0 +1,34 @@
+.h1 {
+    position: relative;
+    width: 100%;
+
+    text-align: center;
+
+    font-size: 5vw;
+
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    position: relative;
+
+    text-decoration: underline;
+
+    color: var(--text-color-1--);
+
+    font-size: var(--font-size-header--);
+
+    padding: 5%;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.menu {
+    position: relative;
+
+    display: flex;
+
+    width: 100%;
+}
