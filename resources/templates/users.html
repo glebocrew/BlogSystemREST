@@ -56,7 +56,10 @@
         </div>
         {% endfor %}
     </div>
-    <div class="users-f">
+
+    {% endif %}
+
+        <div class="users-f">
         <div class="user-f">
             <form class="auth-form" id="userForm" onsubmit="return createUser(event)">
                 <div class="form-group">
@@ -81,7 +84,6 @@
             </form>
         </div>
     </div>
-    {% endif %}
 </body>
 
 <script>
